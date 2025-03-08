@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Recommendation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .form-step {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="step-1" class="form-step active">
+        <h2>Enter Your Name</h2>
+        <input type="text" id="name" placeholder="Enter your name" required>
+        <button onclick="nextStep(2)">Next</button>
+    </div>
+
+    <div id="step-2" class="form-step">
+        <h2>Enter Your Age</h2>
+        <input type="number" id="age" placeholder="Enter your age" required>
+        <button onclick="prevStep(1)">Previous</button>
+        <button onclick="nextStep(3)">Next</button>
+    </div>
+
+    <div id="step-3" class="form-step">
+        <h2>Time Commitment</h2>
+        <input type="text" id="commitment" placeholder="Full-time or Part-time?" required>
+        <button onclick="prevStep(2)">Previous</button>
+        <button onclick="nextStep(4)">Next</button>
+    </div>
+
+    <div id="step-4" class="form-step">
+        <h2>Select Course</h2>
+        <button onclick="storeData('course', 'CSE'); nextStep(5)">Computer Science Engineering</button>
+        <button onclick="storeData('course', 'ECE'); nextStep(5)">Electronics & Communication</button>
+        <button onclick="storeData('course', 'EEE'); nextStep(5)">Electrical & Electronics</button>
+        <button onclick="storeData('course', 'ME'); nextStep(5)">Mechanical Engineering</button>
+        <button onclick="storeData('course', 'CE'); nextStep(5)">Civil Engineering</button>
+        <button onclick="storeData('course', 'ChE'); nextStep(5)">Chemical Engineering</button>
+        <button onclick="storeData('course', 'Aero'); nextStep(5)">Aerospace Engineering</button>
+        <button onclick="storeData('course', 'Auto'); nextStep(5)">Automobile Engineering</button>
+        <button onclick="storeData('course', 'Bio'); nextStep(5)">Biomedical Engineering</button>
+        <button onclick="prevStep(3)">Previous</button>
+    </div>
+
+    <div id="step-5" class="form-step">
+        <h2>Select Specialization</h2>
+        <div id="specialization-options"></div>
+        <button onclick="prevStep(4)">Previous</button>
+    </div>
+
+    <div id="step-6" class="form-step">
+        <h2>Course Overview</h2>
+        <div id="course-details"></div>
+        <button onclick="prevStep(5)">Previous</button>
+    </div>
+</div>
+
+<script>
+let currentStep = 1;
+let specializations = {
+    "CSE": ["AI & ML", "Data Science", "Cyber Security", "IoT", "Blockchain", "Cloud Computing", "Software Engineering"],
+    "ECE": ["VLSI Design", "Embedded Systems", "Wireless Communication", "Robotics & Automation", "Signal Processing"],
+    "EEE": ["Power Systems", "Control Systems", "Renewable Energy", "Electric Vehicles"],
+    "ME": ["Automobile Engineering", "Mechatronics", "Robotics", "Thermal Engineering", "Manufacturing Technology"],
+    "CE": ["Structural Engineering", "Environmental Engineering", "Construction Management", "Transportation Engineering", "Geotechnical Engineering"],
+    "ChE": ["Petrochemical Engineering", "Biochemical Engineering", "Polymer Technology"],
+    "Aero": ["Avionics", "Aerodynamics", "Space Technology"],
+    "Auto": ["Electric Vehicles", "Hybrid Vehicles", "Vehicle Design"],
+    "Bio": ["Medical Imaging", "Bioinformatics", "Tissue Engineering"]
+};
+
+let courseDetails = {};
+Object.keys(specializations).forEach(course => {
+    specializations[course].forEach(spec => {
+        courseDetails[spec] = `${spec} is a specialization focused on advancing knowledge in this field. It provides extensive training and career opportunities in various industries.`;
+    });
+});
+
+function nextStep(step) {
+    document.getElementById('step-' + currentStep).classList.remove('active');
+    currentStep = step;
+    document.getElementById('step-' + currentStep).classList.add('active');
+    if (step === 5) {
+        displaySpecializations();
+    }
+    if (step === 6) {
+        displayCourseDetails();
+    }
+}
+
+function prevStep(step) {
+    document.getElementById('step-' + currentStep).classList.remove('active');
+    currentStep = step;
+    document.getElementById('step-' + currentStep).classList.add('active');
+}
+
+function storeData(key, value) {
+    localStorage.setItem(key, value);
+}
+
+function displaySpecializations() {
+    let course = localStorage.getItem('course');
+    let container = document.getElementById("specialization-options");
+    container.innerHTML = "";
+    specializations[course].forEach(spec => {
+        container.innerHTML += `<button onclick="storeData('specialization', '${spec}'); nextStep(6)">${spec}</button>`;
+    });
+}
+
+function displayCourseDetails() {
+    let specialization = localStorage.getItem('specialization');
+    document.getElementById("course-details").innerHTML = `<h3>${specialization}</h3><p>${courseDetails[specialization]}</p>`;
+}
+</script>
+
+</body>
+</html>
